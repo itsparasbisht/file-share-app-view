@@ -1,5 +1,3 @@
-import axios from "axios";
-import Alert from "./Alert";
 import UploadPage from "./UploadPage";
 
 function App() {

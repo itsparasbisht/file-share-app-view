@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useRef } from "react";
 import Alert from "./Alert";
 import eyeCloseIcon from "./assets/eye-close.png";
 import eyeOpenIcon from "./assets/eye-open.png";
@@ -24,9 +23,19 @@ export default function UploadPage() {
   }
 
   function handleFile(e) {
+    setDisplayText("");
+    setHasError(false);
     const file = e.target.files[0];
-    setFile(file);
-    setDisplayText(file.name);
+    const fileSize = file.size / (1024 * 1024); // bytes to MB conversion
+
+    // do not allow files larger than 10MBs
+    if (fileSize > 10) {
+      setHasError(true);
+      setErrorMessage("Please select a file under 10MBs");
+    } else {
+      setFile(file);
+      setDisplayText(file.name);
+    }
   }
 
   async function handleUpload() {

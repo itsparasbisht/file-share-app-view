@@ -5,7 +5,7 @@ export default function Alert({ open, setOpen, message }) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setOpen(false);
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearTimeout(timeout);
