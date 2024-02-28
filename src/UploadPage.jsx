@@ -122,7 +122,7 @@ export default function UploadPage() {
             <input
               type={showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border-2 p-2 rounded-md mt-2 focus:outline-none border-gray-200"
+              className="w-full border-2 p-2 rounded-md mt-2 focus:outline-none border-gray-200 pr-10"
               placeholder="Protect with password"
               autoComplete="new-password"
             />
