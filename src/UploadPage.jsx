@@ -18,6 +18,9 @@ export default function UploadPage() {
 
   const [displayText, setDisplayText] = useState("");
 
+  const [hasDownloadUrl, setHasDownloadUrl] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+
   function handleTogglePassword() {
     setShowPassword(!showPassword);
   }
@@ -25,6 +28,9 @@ export default function UploadPage() {
   function handleFile(e) {
     setDisplayText("");
     setHasError(false);
+    setHasDownloadUrl(false);
+    setCopiedUrl(false);
+
     const file = e.target.files[0];
     const fileSize = file.size / (1024 * 1024); // bytes to MB conversion
 
@@ -41,6 +47,8 @@ export default function UploadPage() {
   async function handleUpload() {
     setIsUploading(true);
     setDisplayText("...");
+    setHasDownloadUrl(false);
+    setCopiedUrl(false);
     try {
       // get presigned url
       let res = await axios.get(
@@ -65,6 +73,7 @@ export default function UploadPage() {
       });
 
       setDisplayText(res.data.url);
+      setHasDownloadUrl(true);
     } catch (error) {
       console.log(error);
       const message = error?.response?.data?.message;
@@ -72,6 +81,15 @@ export default function UploadPage() {
       setErrorMessage(message);
     } finally {
       setIsUploading(false);
+    }
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedUrl(true);
+    } catch (error) {
+      console.error("Could not copy text: ", error);
     }
   }
 
@@ -142,6 +160,17 @@ export default function UploadPage() {
             {isUploading ? "Uploading..." : "Upload"}
           </button>
           <p className="text-center mt-2 font-semibold">{displayText}</p>
+          {hasDownloadUrl && (
+            <div className="flex justify-center mt-2">
+              <button
+                type="button"
+                onClick={() => copyText(displayText)}
+                className="bg-indigo-600 text-white cursor-pointer py-1 px-3 rounded-full text-sm font-semibold"
+              >
+                {copiedUrl ? "Copied!" : "Copy download link"}
+              </button>
+            </div>
+          )}
         </form>
       </div>
       <Alert open={hasError} setOpen={setHasError} message={errorMessage} />

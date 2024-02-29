@@ -23,25 +23,17 @@ export default function DownloadPage() {
 
   async function handleDownloadFile() {
     setIsLoading(true);
+    setHasError(false);
     try {
-      let res = await axios.get(`${globalObj.apiUrl}/file/${fileID}`);
-
-      const fileName = res.data.fileName;
-
-      res = await axios.post(`${globalObj.apiUrl}/file/${fileID}`, {
+      let res = await axios.post(`${globalObj.apiUrl}/file/${fileID}`, {
         password,
       });
 
-      const blob = new Blob([res.data], {
-        type: "application/octet-stream",
-      });
-
       const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
+      link.href = res.data.url;
+      link.download = res.data.fileName;
+      link.target = "_blank";
       link.click();
-
-      window.URL.revokeObjectURL(link.href);
     } catch (error) {
       console.log(error);
       const message = error?.response?.data?.message;
